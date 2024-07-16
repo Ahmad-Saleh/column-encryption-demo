@@ -9,9 +9,9 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
@@ -20,16 +20,14 @@ public class AttributeEncryptor implements AttributeConverter<String, String> {
 
     private static final String AES = "AES";
     private static final String PASSWORD = "super-duper-password";
-    public static final int SALT_LENGTH = 24;
+    private static final String SALT = "this is insecure way to use salt";
 
     private final Cipher cipher;
     private final SecretKey secretKey;
 
     public AttributeEncryptor() throws Exception {
         cipher = Cipher.getInstance(AES);
-        byte[] salt = new byte[SALT_LENGTH];
-        new SecureRandom().nextBytes(salt);
-        secretKey = getKeyFromPassword(PASSWORD, salt);
+        secretKey = getKeyFromPassword(PASSWORD, SALT.getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
